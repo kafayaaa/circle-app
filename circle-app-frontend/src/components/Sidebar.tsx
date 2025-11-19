@@ -1,0 +1,59 @@
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { logout } from "@/redux/slices/authSlice";
+import {
+  CircleUserRound,
+  Heart,
+  Home,
+  LogOut,
+  UserRoundSearch,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+export default function Sidebar() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const { loading, error } = useAppSelector((state) => state.auth);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
+  return (
+    <div className="fixed w-3/12 inset-y-0 flex flex-col justify-between items-start p-10 border-r border-neutral-700">
+      <div className="w-full flex flex-col justify-start items-start">
+        <h1 className="text-7xl mb-10 font-semibold text-[#04a51e]">circle</h1>
+        <div className="flex flex-col justify-start items-start gap-10">
+          <div className="flex items-center gap-5 text-lg text-white cursor-pointer transition-all hover:scale-110 duration-300 ease-out">
+            <Home className="size-7" />
+            Home
+          </div>
+          <div className="flex items-center gap-5 text-lg text-white cursor-pointer transition-all hover:scale-110 duration-300 ease-out">
+            <UserRoundSearch className="size-7" />
+            Search
+          </div>
+          <div className="flex items-center gap-5 text-lg text-white cursor-pointer transition-all hover:scale-110 duration-300 ease-out">
+            <Heart className="size-7" />
+            Follows
+          </div>
+          <div className="flex items-center gap-5 text-lg text-white cursor-pointer transition-all hover:scale-110 duration-300 ease-out">
+            <CircleUserRound className="size-7" />
+            Profile
+          </div>
+        </div>
+        <button className="w-full py-3 mt-10 text-lg font-semibold text-white bg-[#04a51e] rounded-full cursor-pointer transition-all hover:scale-110 duration-300 ease-out">
+          Create Post
+        </button>
+      </div>
+      <button
+        onClick={handleLogout}
+        className="flex items-center gap-5 text-lg text-white cursor-pointer transition-all hover:scale-110 duration-300 ease-out"
+      >
+        <LogOut className="size-7" />
+        {loading ? "Logging out..." : "Logout"}
+      </button>
+    </div>
+  );
+}
