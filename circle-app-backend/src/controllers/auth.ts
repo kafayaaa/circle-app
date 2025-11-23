@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { prisma } from "../prisma/client";
+import prisma from "../prisma/client";
 import { registerUser, loginUser } from "../services/auth";
 import { registerSchema, loginSchema } from "../schemas/auth";
 export async function handleRegister(req: Request, res: Response) {
@@ -43,12 +43,10 @@ export async function handleLogin(req: Request, res: Response) {
       data: user,
     });
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        code: 500,
-        status: "error",
-        message: error instanceof Error ? error.message : "Invalid Login",
-      });
+    return res.status(500).json({
+      code: 500,
+      status: "error",
+      message: error instanceof Error ? error.message : "Invalid Login",
+    });
   }
 }

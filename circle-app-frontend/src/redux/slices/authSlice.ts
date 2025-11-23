@@ -1,13 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  full_name: string;
-  photo_profile: string | null;
-}
+import type { User } from "../types/userType";
+import { updateUser } from "./userSlice";
 
 interface AuthState {
   token: string | null;
@@ -17,9 +11,9 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  token: localStorage.getItem("token"),
+  token: null,
   user: null,
-  loading: false,
+  loading: true,
   error: null,
 };
 
@@ -39,7 +33,7 @@ export const registerUser = createAsyncThunk(
         "http://localhost:3000/api/v1/auth/register",
         credentials
       );
-      return res.data.token; // token dikirim dari backend kamu
+      return res.data.token;
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         return rejectWithValue(
@@ -63,7 +57,7 @@ export const loginUser = createAsyncThunk(
         "http://localhost:3000/api/v1/auth/login",
         credentials
       );
-      console.log("LOGIN RESPONSE:", res.data);
+      console.log("Login response:", res.data);
       return {
         token: res.data.data.token, // ← FIX
         user: {
@@ -71,7 +65,14 @@ export const loginUser = createAsyncThunk(
           username: res.data.data.username,
           email: res.data.data.email,
           full_name: res.data.data.full_name,
+          password: res.data.data.password,
           photo_profile: res.data.data.photo_profile,
+          bio: res.data.data.bio,
+          threads_count: res.data.data._count.threads,
+          replies_count: res.data.data._count.replies,
+          likes_count: res.data.data._count.likes,
+          following: res.data.data._count.following,
+          followers: res.data.data._count.followers,
         },
       }; // token dikirim dari backend kamu
     } catch (err: unknown) {
@@ -92,6 +93,10 @@ const authSlice = createSlice({
       state.user = null;
       localStorage.removeItem("token");
     },
+    setToken: (state, action) => {
+      state.token = action.payload;
+      state.loading = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -111,9 +116,13 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.user = action.payload;
       });
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, setToken } = authSlice.actions;
 export default authSlice.reducer;

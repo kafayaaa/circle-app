@@ -11,6 +11,7 @@ async function main() {
         email: "rizqi@example.com",
         password:
           "$2a$10$Kc5bTcvJzKPWbuf7nYIJ2.hz1csciqXqwIfJTQvUxLx11jukeEIDa",
+        photo_profile: "profile1.jpg",
       },
       {
         username: "kafa",
@@ -18,6 +19,7 @@ async function main() {
         email: "kafa@example.com",
         password:
           "$2a$10$Kc5bTcvJzKPWbuf7nYIJ2.hz1csciqXqwIfJTQvUxLx11jukeEIDa",
+        photo_profile: "profile2.jpg",
       },
     ],
   });
@@ -26,23 +28,23 @@ async function main() {
     data: [
       {
         content: "King Oyen",
-        image: "/uploads/threads/oyen.jpeg",
+        image: "oyen.jpeg",
         created_by: 1,
       },
       {
         content: "Himalaya Cat",
-        image: "/uploads/threads/himalaya.png",
+        image: "himalaya.png",
         created_by: 1,
       },
       {
         content: "Si Pendek Munchkin",
-        image: "/uploads/threads/munchkin.png",
+        image: "munchkin.png",
         created_by: 2,
       },
       {
         content:
           "Hewan, hewan apa yang ga pernah salah? Kocheng Ga-Wrong!!! xixixi",
-        image: null,
+        image: "",
         created_by: 2,
       },
     ],

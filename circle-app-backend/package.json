@@ -8,26 +8,36 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev --respawn src/app.ts"
+    "dev": "ts-node-dev --respawn src/app.ts",
+    "mq": "ts-node-dev src/workers/threadWorker.ts"
   },
   "prisma": {
-    "seed": "ts-node-dev src/prisma/seed.ts"
+    "seed": "ts-node src/prisma/seed.ts"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^6.19.0",
     "@prisma/client": "^6.19.0",
     "@types/bcrypt": "^6.0.0",
     "@types/joi": "^17.2.2",
     "@types/jsonwebtoken": "^9.0.10",
     "bcrypt": "^6.0.0",
+    "bullmq": "^5.64.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "ioredis": "^5.8.2",
     "joi": "^18.0.1",
     "jsonwebtoken": "^9.0.2",
-    "prisma": "^6.19.0"
+    "multer": "^2.0.2",
+    "pg": "^8.16.3",
+    "prisma": "^6.19.0",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
+    "@types/multer": "^2.0.0",
+    "@types/pg": "^8.15.6",
+    "@types/socket.io": "^3.0.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }

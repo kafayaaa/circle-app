@@ -19,7 +19,7 @@ CREATE TABLE "users" (
 CREATE TABLE "threads" (
     "id" SERIAL NOT NULL,
     "content" TEXT NOT NULL,
-    "image" TEXT,
+    "image" TEXT NOT NULL DEFAULT '',
     "number_of_replies" INTEGER,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "created_by" INTEGER,

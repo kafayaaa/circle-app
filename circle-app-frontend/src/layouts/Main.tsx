@@ -8,7 +8,7 @@ export default function MainLayout({
 }) {
   return (
     <>
-      <div className="w-full grid grid-cols-12 bg-[#1d1d1d]">
+      <div className="w-full min-h-screen grid grid-cols-12 bg-[#1d1d1d]">
         <div className="col-span-3">
           <Sidebar />
         </div>

@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { prisma } from "../prisma/client";
+import prisma from "../prisma/client";
 import { signToken } from "../utils/jwt";
 export async function registerUser({
   username,
@@ -40,6 +40,17 @@ export async function loginUser({
   const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
   const user = await prisma.users.findUnique({
     where: isEmail ? { email: identifier } : { username: identifier },
+    include: {
+      _count: {
+        select: {
+          threads: true,
+          replies: true,
+          likes: true,
+          following: true,
+          followers: true,
+        },
+      },
+    },
   });
   if (!user) {
     throw new Error("User not found");

@@ -1,6 +1,16 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@layer base {
+  html {
+    scrollbar-gutter: stable overlay;
+  }
+}
+
+html {
+  overflow-y: scroll;
+}
+
 /* .bg-color {
   background-color: #1d1d1d;
 } */
