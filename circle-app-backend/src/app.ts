@@ -12,11 +12,13 @@ import threadRouter from "./routers/thread";
 import replyRouter from "./routers/reply";
 import userRouter from "./routers/user";
 import likeRouter from "./routers/like";
+import sessionMiddleware from "./middlewares/session";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(sessionMiddleware);
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: process.env.ALLOWED_ORIGINS, credentials: true }));
 app.use("/uploads", express.static("uploads"));

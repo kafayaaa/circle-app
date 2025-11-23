@@ -8,6 +8,7 @@ import {
   UserRoundSearch,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Nav from "./Nav";
 
 export default function Sidebar() {
   const dispatch = useAppDispatch();
@@ -26,22 +27,22 @@ export default function Sidebar() {
       <div className="w-full flex flex-col justify-start items-start">
         <h1 className="text-7xl mb-10 font-semibold text-[#04a51e]">circle</h1>
         <div className="flex flex-col justify-start items-start gap-10">
-          <div className="flex items-center gap-5 text-lg text-white cursor-pointer transition-all hover:scale-110 duration-300 ease-out">
+          <Nav active="/">
             <Home className="size-7" />
             Home
-          </div>
-          <div className="flex items-center gap-5 text-lg text-white cursor-pointer transition-all hover:scale-110 duration-300 ease-out">
+          </Nav>
+          <Nav active="/search">
             <UserRoundSearch className="size-7" />
             Search
-          </div>
-          <div className="flex items-center gap-5 text-lg text-white cursor-pointer transition-all hover:scale-110 duration-300 ease-out">
+          </Nav>
+          <Nav active="/follow">
             <Heart className="size-7" />
             Follows
-          </div>
-          <div className="flex items-center gap-5 text-lg text-white cursor-pointer transition-all hover:scale-110 duration-300 ease-out">
+          </Nav>
+          <Nav active="/profile">
             <CircleUserRound className="size-7" />
             Profile
-          </div>
+          </Nav>
         </div>
         <button className="w-full py-3 mt-10 text-lg font-semibold text-white bg-[#04a51e] rounded-full cursor-pointer transition-all hover:scale-110 duration-300 ease-out">
           Create Post

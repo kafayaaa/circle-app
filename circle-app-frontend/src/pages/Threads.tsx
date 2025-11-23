@@ -11,8 +11,6 @@ export default function ThreadPage() {
 
   const { threads, error } = useSelector((state: RootState) => state.thread);
 
-  console.log(threads);
-
   // Load pertama kali
   React.useEffect(() => {
     dispatch(fetchThreads());
@@ -26,6 +24,7 @@ export default function ThreadPage() {
       <div className="w-full flex flex-col items-start ">
         {threads.map((thread) => (
           <Thread
+            key={thread.id}
             id={thread.id}
             fullname={thread.createdBy?.full_name ?? "Unknown"}
             username={thread.createdBy?.username ?? "Unknown"}

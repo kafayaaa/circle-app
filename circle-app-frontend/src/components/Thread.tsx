@@ -51,10 +51,7 @@ export default function Thread({
   };
 
   return (
-    <div
-      key={id}
-      className="w-full flex flex-col justify-start items-start gap-5 p-5 border-b border-neutral-700"
-    >
+    <div className="w-full flex flex-col justify-start items-start gap-5 p-5 border-b border-neutral-700">
       <Link to={"/thread-detail/" + id}>
         <div className="flex items-center gap-4 mb-4">
           {(profile && (
