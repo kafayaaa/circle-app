@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import prisma from "../prisma/client";
 
 export const getFollowings = async (req: Request, res: Response) => {
-  const userId = (req as any).user.id;
+  // const userId = (req as any).user?.id;
+  const { userId } = req.params;
   if (!userId)
     return res
       .status(401)
@@ -16,17 +17,10 @@ export const getFollowings = async (req: Request, res: Response) => {
         created_at: "desc",
       },
       where: {
-        following_id: Number(userId),
+        follower_id: Number(userId),
       },
       include: {
-        follower_user: {
-          select: {
-            id: true,
-            username: true,
-            full_name: true,
-            photo_profile: true,
-          },
-        },
+        following: true,
       },
     });
 
@@ -37,69 +31,6 @@ export const getFollowings = async (req: Request, res: Response) => {
       data: followers,
     });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ code: 500, status: "error", message: "Internal Server Error" });
-  }
-};
-
-export const addFollow = async (req: Request, res: Response) => {
-  const userId = (req as any).user.id;
-  const add_follow_id = req.body.add_follow_id;
-  console.log("User ID: " + userId, "Follow User ID: " + add_follow_id);
-
-  if (!userId)
-    return res
-      .status(401)
-      .json({ code: 401, status: "error", message: "Unauthorized" });
-
-  if (!add_follow_id)
-    return res
-      .status(400)
-      .json({ code: 400, status: "error", message: "Bad Request" });
-
-  if (userId === add_follow_id)
-    return res
-      .status(400)
-      .json({ code: 400, status: "error", message: "Bad Request" });
-
-  try {
-    const double = await prisma.following.findFirst({
-      where: {
-        following_id: Number(userId),
-        follower_id: Number(add_follow_id),
-      },
-    });
-
-    if (double) {
-      await prisma.following.deleteMany({
-        where: {
-          following_id: Number(userId),
-          follower_id: Number(add_follow_id),
-        },
-      });
-
-      return res
-        .status(200)
-        .json({
-          code: 200,
-          status: "success",
-          message: "Unfollow",
-          data: double,
-        });
-    }
-
-    const follow = await prisma.following.create({
-      data: {
-        following_id: Number(userId),
-        follower_id: Number(add_follow_id),
-      },
-    });
-
-    console.log(follow);
-    return res.status(200).json({ code: 200, status: "success", data: follow });
-  } catch (error) {
-    console.log(error);
     return res
       .status(500)
       .json({ code: 500, status: "error", message: "Internal Server Error" });
@@ -121,17 +52,10 @@ export const getFollowers = async (req: Request, res: Response) => {
         created_at: "desc",
       },
       where: {
-        follower_id: Number(userId),
+        following_id: Number(userId),
       },
       include: {
-        following_user: {
-          select: {
-            id: true,
-            username: true,
-            full_name: true,
-            photo_profile: true,
-          },
-        },
+        follower: true,
       },
     });
 
@@ -148,8 +72,66 @@ export const getFollowers = async (req: Request, res: Response) => {
   }
 };
 
+export const addFollow = async (req: Request, res: Response) => {
+  const userId = (req as any).user?.id;
+  const add_follow_id = req.body.add_follow_id;
+  console.log("User ID: " + userId, "Follow User ID: " + add_follow_id);
+
+  if (!userId)
+    return res
+      .status(401)
+      .json({ code: 401, status: "error", message: "Unauthorized" });
+
+  if (!add_follow_id)
+    return res
+      .status(400)
+      .json({ code: 400, status: "error", message: "Bad Request" });
+
+  if (Number(userId) === Number(add_follow_id))
+    return res
+      .status(400)
+      .json({ code: 400, status: "error", message: "Bad Request" });
+
+  try {
+    const existingFollow = await prisma.following.findFirst({
+      where: {
+        follower_id: Number(userId),
+        following_id: Number(add_follow_id),
+      },
+    });
+
+    if (existingFollow) {
+      return res.status(400).json({
+        code: 400,
+        status: "error",
+        message: "Already following this user",
+      });
+    }
+
+    const follow = await prisma.following.create({
+      data: {
+        follower_id: Number(userId),
+        following_id: Number(add_follow_id),
+      },
+    });
+
+    console.log(follow);
+    return res.status(200).json({ code: 200, status: "success", data: follow });
+  } catch (error: any) {
+    if (error?.code === "P2002") {
+      return res
+        .status(409)
+        .json({ code: 409, status: "error", message: "Already following" });
+    }
+    console.log(error);
+    return res
+      .status(500)
+      .json({ code: 500, status: "error", message: "Internal Server Error" });
+  }
+};
+
 export const unfollow = async (req: Request, res: Response) => {
-  const userId = (req as any).user.id;
+  const userId = (req as any).user?.id;
   const unfollow_id = req.body.unfollow_id;
   console.log("User ID: " + userId, "Unfollow User ID: " + unfollow_id);
 
@@ -163,7 +145,7 @@ export const unfollow = async (req: Request, res: Response) => {
       .status(400)
       .json({ code: 400, status: "error", message: "Bad Request" });
 
-  if (userId === unfollow_id)
+  if (Number(userId) === Number(unfollow_id))
     return res
       .status(400)
       .json({ code: 400, status: "error", message: "Bad Request" });
@@ -182,6 +164,53 @@ export const unfollow = async (req: Request, res: Response) => {
       .json({ code: 200, status: "success", data: unfollow });
   } catch (error) {
     console.log(error);
+    return res
+      .status(500)
+      .json({ code: 500, status: "error", message: "Internal Server Error" });
+  }
+};
+
+export const getMyFollowings = async (req: Request, res: Response) => {
+  const userId = (req as any).user?.id;
+  if (!userId) {
+    return res
+      .status(401)
+      .json({ code: 401, status: "error", message: "Unauthorized" });
+  }
+
+  try {
+    // Ambil semua records dimana active user adalah follower (user yg mengikuti orang lain)
+    const list = await prisma.following.findMany({
+      where: { follower_id: Number(userId) },
+      include: {
+        // include data user yang di-follow
+        following: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+            // tambah field user lain yang mau dikirim
+            // photo_profile: true,
+          },
+        },
+      },
+      orderBy: { created_at: "desc" },
+    });
+
+    // Format respons (kamu bisa sesuaikan shape)
+    const payload = list.map((item) => ({
+      id: item.id,
+      follower_id: item.follower_id,
+      following_id: item.following_id,
+      created_at: item.created_at,
+      following_user: item.following, // object user yang di-follow
+    }));
+
+    return res
+      .status(200)
+      .json({ code: 200, status: "success", data: payload });
+  } catch (err) {
+    console.error("getMyFollowings:", err);
     return res
       .status(500)
       .json({ code: 500, status: "error", message: "Internal Server Error" });

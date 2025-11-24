@@ -1,30 +1,70 @@
 import api from "@/api/api";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSlice,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
 import axios from "axios";
+import type { Follow } from "../types/followType";
 
 interface FollowState {
-  following: number[];
-  followers: number[];
+  following: Follow[];
   loading: boolean;
-  error: string | null;
+  error?: string | null;
 }
 const initialState: FollowState = {
   following: [],
-  followers: [],
   loading: false,
   error: null,
 };
 
+export const fetchFollowing = createAsyncThunk<Follow[], void>(
+  "follows/fetchFollowing",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.get("/follows/followings");
+      console.log(res);
+      return res.data.data;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        return rejectWithValue(
+          err.response?.data?.message || "Failed to fetch following"
+        );
+      }
+      return rejectWithValue("Unexpected error occurred");
+    }
+  }
+);
+
+export const fetchMyFollowings = createAsyncThunk<Follow[], void>(
+  "follow/fetchMyFollowings",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.get("/follows/me"); // buat endpoint yang return followings untuk active user
+      return res.data.data as Follow[];
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        return rejectWithValue(
+          err.response?.data?.message || "Failed to fetch following"
+        );
+      }
+      return rejectWithValue("Unexpected error occurred");
+    }
+  }
+);
+
 export const addFollow = createAsyncThunk(
   "folllow/addFollow",
   async (
-    data: { userId: number | undefined; add_follow_id: number | null },
+    data: { userId: number; add_follow_id: number },
     { rejectWithValue }
   ) => {
     try {
-      const res = await api.post("/follows/add-follow", data);
+      const res = await api.post("/follows/add-follow", {
+        add_follow_id: data.add_follow_id,
+      });
       console.log(res.data);
-      return res.data;
+      return res.data.data as Follow;
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         return rejectWithValue(
@@ -36,8 +76,33 @@ export const addFollow = createAsyncThunk(
   }
 );
 
+export const unfollow = createAsyncThunk(
+  "follows/unfollow",
+  async (
+    data: { userId: number; unfollow_id: number },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await api.delete("/follows/unfollow", {
+        data: {
+          unfollow_id: data.unfollow_id,
+        },
+      });
+      console.log(res.data);
+      return res.data.data;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        return rejectWithValue(
+          err.response?.data?.message || "Failed to unfollow"
+        );
+      }
+      return rejectWithValue("Unexpected error occurred");
+    }
+  }
+);
+
 const followSlice = createSlice({
-  name: "follows",
+  name: "follow",
   initialState,
   reducers: {
     addFollowFromSocket: (state, action) => {
@@ -46,15 +111,61 @@ const followSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchFollowing.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchFollowing.fulfilled,
+        (state, action: PayloadAction<Follow[]>) => {
+          state.loading = false;
+          state.following = action.payload;
+        }
+      )
+      .addCase(fetchFollowing.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(fetchMyFollowings.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchMyFollowings.fulfilled,
+        (state, action: PayloadAction<Follow[]>) => {
+          state.loading = false;
+          state.following = action.payload;
+        }
+      )
+      .addCase(fetchMyFollowings.rejected, (state, action) => {
+        state.loading = false;
+        state.error = String(action.payload);
+      })
       .addCase(addFollow.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(addFollow.fulfilled, (state, action) => {
+      .addCase(addFollow.fulfilled, (state, action: PayloadAction<Follow>) => {
         state.loading = false;
-        state.following = action.payload;
+        const exists = state.following.some(
+          (f) =>
+            f.follower_id === action.payload.follower_id &&
+            f.following_id === action.payload.following_id
+        );
+        if (!exists) state.following.push(action.payload);
       })
       .addCase(addFollow.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(unfollow.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(unfollow.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(unfollow.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

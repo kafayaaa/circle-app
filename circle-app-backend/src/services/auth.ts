@@ -46,7 +46,7 @@ export async function loginUser({
           threads: true,
           replies: true,
           likes: true,
-          following: true,
+          followings: true,
           followers: true,
         },
       },

@@ -23,8 +23,8 @@ model users {
   replies       replies[]
   threads       threads[]
   likes         likes[]
-  following     following[] @relation("Following_User")
-  followers     following[] @relation("Follower_User")
+  followings    following[] @relation("follower_following")
+  followers     following[] @relation("following_follower")
 }
 
 model threads {
@@ -71,13 +71,16 @@ model likes {
 }
 
 model following {
-  id              Int @id @default(autoincrement())
-  following_id    Int?
-  follower_id     Int?
-  created_at      DateTime  @default(now())
-  updated_at      DateTime  @updatedAt
-  // Relations
-  following_user  users? @relation("Following_User", fields: [following_id], references: [id])
-  follower_user   users? @relation("Follower_User", fields: [follower_id], references: [id])
+  id           Int      @id @default(autoincrement())
+  follower_id  Int      // user who performs the follow (active user)
+  following_id Int      // user being followed (target user)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  // relations
+  follower  users @relation("follower_following", fields: [follower_id], references: [id])
+  following users @relation("following_follower", fields: [following_id], references: [id])
+
+  @@unique([follower_id, following_id]) // prevent duplicate follows at DB level
 }
 
