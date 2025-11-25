@@ -11,4 +11,6 @@ export interface User {
   likes_count: number;
   following_count: number;
   followers_count: number;
+  token?: string;
+  _count?: unknown;
 }

@@ -41,6 +41,25 @@ export const fetchMyFollowings = createAsyncThunk<Follow[], void>(
   async (_, { rejectWithValue }) => {
     try {
       const res = await api.get("/follows/me"); // buat endpoint yang return followings untuk active user
+      console.log(res);
+      return res.data.data as Follow[];
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        return rejectWithValue(
+          err.response?.data?.message || "Failed to fetch following"
+        );
+      }
+      return rejectWithValue("Unexpected error occurred");
+    }
+  }
+);
+
+export const fetchMyFollowers = createAsyncThunk<Follow[], void>(
+  "follow/fetchMyFollowers",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.get("/follows/me-followers");
+      console.log(res);
       return res.data.data as Follow[];
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
@@ -106,7 +125,16 @@ const followSlice = createSlice({
   initialState,
   reducers: {
     addFollowFromSocket: (state, action) => {
-      state.following.push(action.payload);
+      if (!state.following) state.following = [];
+      if (!action.payload) return;
+
+      const exists = state.following.some(
+        (f) =>
+          f.follower_id === action.payload.follower_id &&
+          f.following_id === action.payload.following_id
+      );
+
+      if (!exists) state.following.unshift(action.payload);
     },
   },
   extraReducers: (builder) => {

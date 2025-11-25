@@ -41,6 +41,11 @@ export const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
+  socket.on("register", (userId) => {
+    socket.join(userId.toString()); // user masuk ke "room" sesuai ID
+    console.log(`User ${userId} joined room ${userId}`);
+  });
+
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });

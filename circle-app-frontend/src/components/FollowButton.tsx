@@ -1,3 +1,4 @@
+import { refreshUser } from "@/redux/slices/authSlice";
 import {
   addFollow,
   fetchMyFollowings,
@@ -22,7 +23,9 @@ export const FollowButton: React.FC<FollowButtonProps> = ({ targetUserId }) => {
 
   useEffect(() => {
     // optional: fetch followings once component mounts
-    if (activeUser) dispatch(fetchMyFollowings());
+    if (activeUser) {
+      dispatch(fetchMyFollowings());
+    }
   }, [activeUser, dispatch]);
 
   if (!activeUser) {
@@ -54,13 +57,13 @@ export const FollowButton: React.FC<FollowButtonProps> = ({ targetUserId }) => {
             unfollow_id: targetUserId,
           })
         ).unwrap();
-        await dispatch(fetchMyFollowings());
       } else {
         await dispatch(
           addFollow({ userId: activeUser.id, add_follow_id: targetUserId })
         ).unwrap();
-        await dispatch(fetchMyFollowings());
       }
+      await dispatch(fetchMyFollowings());
+      await dispatch(refreshUser());
     } catch (error) {
       console.error(error);
     } finally {

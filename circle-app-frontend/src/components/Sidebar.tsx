@@ -27,19 +27,19 @@ export default function Sidebar() {
       <div className="w-full flex flex-col justify-start items-start">
         <h1 className="text-7xl mb-10 font-semibold text-[#04a51e]">circle</h1>
         <div className="flex flex-col justify-start items-start gap-10">
-          <Nav active="/">
+          <Nav active="/" to="/">
             <Home className="size-7" />
             Home
           </Nav>
-          <Nav active="/search">
+          <Nav active="/search" to="/search">
             <UserRoundSearch className="size-7" />
             Search
           </Nav>
-          <Nav active="/follow">
+          <Nav active="/follow" to="/follow">
             <Heart className="size-7" />
             Follows
           </Nav>
-          <Nav active="/profile">
+          <Nav active="/profile" to="/profile">
             <CircleUserRound className="size-7" />
             Profile
           </Nav>

@@ -2,6 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import type { User } from "../types/userType";
 import { updateUser } from "./userSlice";
+import type { RootState } from "../store";
+import api from "@/api/api";
 
 interface AuthState {
   token: string | null;
@@ -71,7 +73,7 @@ export const loginUser = createAsyncThunk(
           threads_count: res.data.data._count.threads,
           replies_count: res.data.data._count.replies,
           likes_count: res.data.data._count.likes,
-          following_count: res.data.data._count.following,
+          following_count: res.data.data._count.followings,
           followers_count: res.data.data._count.followers,
         },
       }; // token dikirim dari backend kamu
@@ -80,6 +82,27 @@ export const loginUser = createAsyncThunk(
         return rejectWithValue(err.response?.data?.message || "Login failed");
       }
       return rejectWithValue("Unexpected error occurred");
+    }
+  }
+);
+
+export const refreshUser = createAsyncThunk(
+  "auth/refreshUser",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const state = getState() as RootState;
+      const token = state.auth.token;
+      if (!token) return rejectWithValue("No token");
+
+      const res = await api.get("/auth/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res.data.data);
+      return res.data.data; // user terbaru
+    } catch (err) {
+      return rejectWithValue("Failed to refresh user" + err);
     }
   }
 );
@@ -96,6 +119,32 @@ const authSlice = createSlice({
     setToken: (state, action) => {
       state.token = action.payload;
       state.loading = false;
+    },
+    addFollowCountFromSocket: (state, action) => {
+      if (!state.user) return;
+
+      const { type } = action.payload;
+
+      if (type === "FOLLOWER_ADD") {
+        state.user.followers_count += 1;
+      }
+
+      if (type === "FOLLOWING_ADD") {
+        state.user.following_count += 1;
+      }
+    },
+    removeFollowCountFromSocket: (state, action) => {
+      if (!state.user) return;
+
+      const { type } = action.payload;
+
+      if (type === "FOLLOWER_REMOVE") {
+        state.user.followers_count -= 1;
+      }
+
+      if (type === "FOLLOWING_REMOVE") {
+        state.user.following_count -= 1;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -120,9 +169,25 @@ const authSlice = createSlice({
 
       .addCase(updateUser.fulfilled, (state, action) => {
         state.user = action.payload;
+      })
+      .addCase(refreshUser.fulfilled, (state, action) => {
+        state.user = {
+          ...state.user,
+          ...action.payload,
+          threads_count: action.payload._count.threads,
+          replies_count: action.payload._count.replies,
+          likes_count: action.payload._count.likes,
+          followers_count: action.payload._count.followers,
+          following_count: action.payload._count.followings,
+        };
       });
   },
 });
 
-export const { logout, setToken } = authSlice.actions;
+export const {
+  logout,
+  setToken,
+  addFollowCountFromSocket,
+  removeFollowCountFromSocket,
+} = authSlice.actions;
 export default authSlice.reducer;

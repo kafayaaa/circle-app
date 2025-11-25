@@ -1,10 +1,24 @@
 import type { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import ProfileEdit from "./ProfileEdit";
+import { useEffect } from "react";
+import socket from "@/hooks/useSocket";
 
 export default function Profile() {
   const user = useSelector((state: RootState) => state.auth.user);
+
+  useEffect(() => {
+    socket.on("follow_event", (data) => {
+      console.log("RECEIVED SOCKET FOLLOW EVENT:", data);
+    });
+
+    return () => {
+      socket.off("follow_event");
+    };
+  }, []);
+
   if (!user) return <p>Loading...</p>;
+  console.log(user);
 
   return (
     <div className="w-full p-5 flex flex-col justify-start items-start gap-3 bg-[#262626] rounded-xl">
@@ -33,15 +47,11 @@ export default function Profile() {
         </p>
         <div className="flex items-center gap-3 text-white">
           <p className="text-neutral-500">
-            <span className="text-white font-bold">
-              {user.following_count || 0}
-            </span>
+            <span className="text-white font-bold">{user.following_count}</span>
             &nbsp;Following
           </p>
           <p className="text-neutral-500">
-            <span className="text-white font-bold">
-              {user.followers_count || 0}
-            </span>
+            <span className="text-white font-bold">{user.followers_count}</span>
             &nbsp;Follower
           </p>
         </div>

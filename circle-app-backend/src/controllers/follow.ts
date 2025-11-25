@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../prisma/client";
+import { io } from "../app";
 
 export const getFollowings = async (req: Request, res: Response) => {
   // const userId = (req as any).user?.id;
@@ -115,6 +116,16 @@ export const addFollow = async (req: Request, res: Response) => {
       },
     });
 
+    io.to(add_follow_id.toString()).emit("follow_event", {
+      type: "FOLLOWER_ADD",
+      data: follow,
+    });
+
+    io.to(userId.toString()).emit("follow_event", {
+      type: "FOLLOWING_ADD",
+      data: follow,
+    });
+
     console.log(follow);
     return res.status(200).json({ code: 200, status: "success", data: follow });
   } catch (error: any) {
@@ -158,6 +169,16 @@ export const unfollow = async (req: Request, res: Response) => {
       },
     });
 
+    io.to(unfollow_id.toString()).emit("follow_event", {
+      type: "FOLLOWER_REMOVE",
+      data: { follower_id: userId, following_id: unfollow_id },
+    });
+
+    io.to(userId.toString()).emit("follow_event", {
+      type: "FOLLOWING_REMOVE",
+      data: { follower_id: userId, following_id: unfollow_id },
+    });
+
     console.log(unfollow);
     return res
       .status(200)
@@ -189,8 +210,7 @@ export const getMyFollowings = async (req: Request, res: Response) => {
             id: true,
             username: true,
             email: true,
-            // tambah field user lain yang mau dikirim
-            // photo_profile: true,
+            photo_profile: true,
           },
         },
       },
@@ -204,6 +224,50 @@ export const getMyFollowings = async (req: Request, res: Response) => {
       following_id: item.following_id,
       created_at: item.created_at,
       following_user: item.following, // object user yang di-follow
+    }));
+
+    return res
+      .status(200)
+      .json({ code: 200, status: "success", data: payload });
+  } catch (err) {
+    console.error("getMyFollowings:", err);
+    return res
+      .status(500)
+      .json({ code: 500, status: "error", message: "Internal Server Error" });
+  }
+};
+
+export const getMyFollowers = async (req: Request, res: Response) => {
+  const userId = (req as any).user?.id;
+  if (!userId) {
+    return res
+      .status(401)
+      .json({ code: 401, status: "error", message: "Unauthorized" });
+  }
+
+  try {
+    const list = await prisma.following.findMany({
+      where: { following_id: Number(userId) },
+      include: {
+        follower: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+            photo_profile: true,
+          },
+        },
+      },
+      orderBy: { created_at: "desc" },
+    });
+
+    // Format respons (kamu bisa sesuaikan shape)
+    const payload = list.map((item) => ({
+      id: item.id,
+      follower_id: item.follower_id,
+      following_id: item.following_id,
+      created_at: item.created_at,
+      follower_user: item.follower,
     }));
 
     return res
