@@ -17,6 +17,7 @@ import type { RootState } from "./redux/store";
 import { registerSocketUser } from "./lib/socketRegister";
 import FollowingPage from "./pages/Following";
 import FollowerPage from "./pages/Follower";
+import SearchPage from "./pages/Search";
 
 function App() {
   registerSocketUser();
@@ -75,6 +76,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ThreadDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <ProtectedRoute>
+                <SearchPage />
               </ProtectedRoute>
             }
           />

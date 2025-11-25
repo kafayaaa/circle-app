@@ -3,10 +3,18 @@ import prisma from "../prisma/client";
 import bcrypt from "bcrypt";
 
 export const getUsers = async (req: Request, res: Response) => {
-  const { limit, offset } = req.query;
+  const { limit, offset, search } = req.query;
 
   try {
     const users = await prisma.users.findMany({
+      where: search
+        ? {
+            OR: [
+              { username: { contains: String(search), mode: "insensitive" } },
+              { full_name: { contains: String(search), mode: "insensitive" } },
+            ],
+          }
+        : undefined,
       orderBy: {
         created_at: "desc",
       },

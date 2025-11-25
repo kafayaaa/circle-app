@@ -5,6 +5,7 @@ import replyReducer from "./slices/replySlice";
 import userReducer from "./slices/userSlice";
 import likeReducer from "./slices/likeSlice";
 import followReducer from "./slices/followSlice";
+import searchReducer from "./slices/searchSlice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   like: likeReducer,
   follow: followReducer,
+  search: searchReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
