@@ -39,7 +39,6 @@ export const setupSocketListeners = (dispatch: AppDispatch) => {
   });
 
   socket.on("follow_event", (data) => {
-    // data.data = follow record dari backend
     dispatch(addFollowFromSocket(data.data));
 
     if (data.type === "FOLLOWER_ADD" || data.type === "FOLLOWING_ADD") {

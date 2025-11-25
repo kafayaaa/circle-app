@@ -5,7 +5,7 @@ import {
   unfollow,
 } from "@/redux/slices/followSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 interface FollowButtonProps {
@@ -20,13 +20,6 @@ export const FollowButton: React.FC<FollowButtonProps> = ({ targetUserId }) => {
     (state: RootState) => state.follow
   );
   const [localLoading, setLocalLoading] = useState(false);
-
-  useEffect(() => {
-    // optional: fetch followings once component mounts
-    if (activeUser) {
-      dispatch(fetchMyFollowings());
-    }
-  }, [activeUser, dispatch]);
 
   if (!activeUser) {
     return null;

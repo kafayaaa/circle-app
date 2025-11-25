@@ -9,11 +9,13 @@ import type { Follow } from "../types/followType";
 
 interface FollowState {
   following: Follow[];
+  follower: Follow[];
   loading: boolean;
   error?: string | null;
 }
 const initialState: FollowState = {
   following: [],
+  follower: [],
   loading: false,
   error: null,
 };
@@ -29,6 +31,24 @@ export const fetchFollowing = createAsyncThunk<Follow[], void>(
       if (axios.isAxiosError(err)) {
         return rejectWithValue(
           err.response?.data?.message || "Failed to fetch following"
+        );
+      }
+      return rejectWithValue("Unexpected error occurred");
+    }
+  }
+);
+
+export const fetchFollower = createAsyncThunk<Follow[], void>(
+  "follows/fetchFollower",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.get("/follows/followers");
+      console.log(res);
+      return res.data.data;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        return rejectWithValue(
+          err.response?.data?.message || "Failed to fetch follower"
         );
       }
       return rejectWithValue("Unexpected error occurred");
@@ -64,7 +84,7 @@ export const fetchMyFollowers = createAsyncThunk<Follow[], void>(
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         return rejectWithValue(
-          err.response?.data?.message || "Failed to fetch following"
+          err.response?.data?.message || "Failed to fetch follower"
         );
       }
       return rejectWithValue("Unexpected error occurred");
@@ -154,6 +174,21 @@ const followSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+      .addCase(fetchFollower.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchFollower.fulfilled,
+        (state, action: PayloadAction<Follow[]>) => {
+          state.loading = false;
+          state.follower = action.payload;
+        }
+      )
+      .addCase(fetchFollower.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
       .addCase(fetchMyFollowings.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -166,6 +201,21 @@ const followSlice = createSlice({
         }
       )
       .addCase(fetchMyFollowings.rejected, (state, action) => {
+        state.loading = false;
+        state.error = String(action.payload);
+      })
+      .addCase(fetchMyFollowers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchMyFollowers.fulfilled,
+        (state, action: PayloadAction<Follow[]>) => {
+          state.loading = false;
+          state.follower = action.payload;
+        }
+      )
+      .addCase(fetchMyFollowers.rejected, (state, action) => {
         state.loading = false;
         state.error = String(action.payload);
       })

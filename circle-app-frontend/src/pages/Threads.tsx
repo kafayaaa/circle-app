@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../redux/store";
 import { fetchThreads } from "../redux/slices/threadSlice";
-import React from "react";
+import { useEffect } from "react";
 import MainLayout from "@/layouts/Main";
 import NewThread from "@/components/NewThread";
 import Thread from "@/components/Thread";
+import { fetchMyFollowings } from "@/redux/slices/followSlice";
 
 export default function ThreadPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -12,8 +13,11 @@ export default function ThreadPage() {
   const { threads, error } = useSelector((state: RootState) => state.thread);
 
   // Load pertama kali
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(fetchThreads());
+  }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchMyFollowings());
   }, [dispatch]);
 
   if (error) return <p>Error: {error}</p>;

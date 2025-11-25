@@ -3,8 +3,8 @@ import prisma from "../prisma/client";
 import { io } from "../app";
 
 export const getFollowings = async (req: Request, res: Response) => {
-  // const userId = (req as any).user?.id;
-  const { userId } = req.params;
+  const userId = (req as any).user?.id;
+  // const { userId } = req.params;
   if (!userId)
     return res
       .status(401)
@@ -209,6 +209,7 @@ export const getMyFollowings = async (req: Request, res: Response) => {
           select: {
             id: true,
             username: true,
+            full_name: true,
             email: true,
             photo_profile: true,
           },
@@ -253,6 +254,7 @@ export const getMyFollowers = async (req: Request, res: Response) => {
           select: {
             id: true,
             username: true,
+            full_name: true,
             email: true,
             photo_profile: true,
           },

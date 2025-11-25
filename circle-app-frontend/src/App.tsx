@@ -15,6 +15,8 @@ import { setupSocketListeners } from "./hooks/useSocket";
 import { setToken } from "./redux/slices/authSlice";
 import type { RootState } from "./redux/store";
 import { registerSocketUser } from "./lib/socketRegister";
+import FollowingPage from "./pages/Following";
+import FollowerPage from "./pages/Follower";
 
 function App() {
   registerSocketUser();
@@ -83,7 +85,25 @@ function App() {
                 <FollowPage />
               </ProtectedRoute>
             }
-          />
+          >
+            <Route index element={<FollowingPage />} />
+            <Route
+              path="/follow/followings"
+              element={
+                <ProtectedRoute>
+                  <FollowingPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/follow/followers"
+              element={
+                <ProtectedRoute>
+                  <FollowerPage />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
         </Routes>
       </BrowserRouter>
     </>
