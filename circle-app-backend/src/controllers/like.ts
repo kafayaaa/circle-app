@@ -69,6 +69,8 @@ export const handleLike = async (req: Request, res: Response) => {
       });
     }
 
+    const isLiked = !existingLike;
+
     // Ambil count terbaru SELALU
     newCount = await prisma.likes.count({
       where: { thread_id: threadId },
@@ -79,6 +81,7 @@ export const handleLike = async (req: Request, res: Response) => {
       thread_id: threadId,
       user_id: userId,
       likes_count: newCount,
+      is_liked: isLiked,
     });
 
     return res.status(200).json({
@@ -88,6 +91,7 @@ export const handleLike = async (req: Request, res: Response) => {
         thread_id: threadId,
         user_id: userId,
         likes_count: newCount,
+        is_liked: isLiked,
       },
     });
   } catch (error) {

@@ -37,13 +37,14 @@ export default function ReplyForm({ photo_profile }: ReplyProps) {
     const formData = new FormData();
     if (content) formData.append("content", content);
     if (image) formData.append("image", image);
-
+    console.log(image);
     setContent("");
     setImage(null);
     setUploadedImg(false);
 
     try {
       setTimeout(() => {
+        console.log(formData);
         dispatch(createReply({ id: id, formData }));
         setUploading(false);
       }, 1000);

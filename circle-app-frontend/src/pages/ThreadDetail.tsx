@@ -18,7 +18,7 @@ export default function ThreadDetail() {
   const { threadDetail } = useSelector((state: RootState) => state.thread);
   const { replies } = useSelector((state: RootState) => state.reply);
   const isLiked = threadDetail?.is_liked;
-  // Load pertama kali
+
   useEffect(() => {
     if (id) dispatch(fetchThreadById(id));
     if (id) dispatch(fetchReplies(id));

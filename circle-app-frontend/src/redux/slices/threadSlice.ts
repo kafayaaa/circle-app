@@ -57,6 +57,7 @@ export const fetchThreadById = createAsyncThunk(
   async (id: string | number, { rejectWithValue }) => {
     try {
       const res = await api.get(`/thread/thread/${id}`);
+      console.log(res);
       return res.data.data;
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
@@ -99,17 +100,19 @@ const threadSlice = createSlice({
       state.threads.unshift(action.payload);
     },
     updateThreadLikeFromSocket: (state, action) => {
-      const { thread_id, likes_count } = action.payload;
+      const { thread_id, likes_count, is_liked } = action.payload;
       const thread = state.threads.find((t) => t.id === thread_id);
       if (thread) {
         if (!thread._count) thread._count = { replies: 0, likes: 0 };
         thread._count.likes = likes_count;
+        thread.is_liked = is_liked;
       }
 
       if (state.threadDetail && state.threadDetail.id === thread_id) {
         if (!state.threadDetail._count)
           state.threadDetail._count = { replies: 0, likes: 0 };
         state.threadDetail._count.likes = likes_count;
+        state.threadDetail.is_liked = is_liked;
       }
     },
   },

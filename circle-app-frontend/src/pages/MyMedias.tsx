@@ -21,7 +21,7 @@ export default function MyMediasPage() {
         .map((thread) => (
           <Link
             key={thread.id}
-            to={`/threads/${thread.id}`}
+            to={`/profile/my-medias/${thread.id}`}
             className="size-full aspect-square"
           >
             <img

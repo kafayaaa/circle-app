@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Nav from "./Nav";
+import NewThreadButton from "./NewThreadButton";
 
 export default function Sidebar() {
   const dispatch = useAppDispatch();
@@ -44,9 +45,9 @@ export default function Sidebar() {
             Profile
           </Nav>
         </div>
-        <button className="w-full py-3 mt-10 text-lg font-semibold text-white bg-[#04a51e] rounded-full cursor-pointer transition-all hover:scale-110 duration-300 ease-out">
-          Create Post
-        </button>
+        <div className="flex items-center justify-center bg-[#04a51e] w-full py-2 mt-10 rounded-full">
+          <NewThreadButton name="Create Post" />
+        </div>
       </div>
       <button
         onClick={handleLogout}

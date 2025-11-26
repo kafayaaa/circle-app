@@ -35,6 +35,7 @@ export const setupSocketListeners = (dispatch: AppDispatch) => {
   });
 
   socket.on("like_updated", (like) => {
+    console.log("socket data", like);
     dispatch(updateThreadLikeFromSocket(like));
   });
 

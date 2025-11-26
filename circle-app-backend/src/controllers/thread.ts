@@ -111,15 +111,16 @@ export const getMyThreads = async (req: Request, res: Response) => {
 };
 
 export const getThreadDetail = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  if (!id)
+  const threadId = Number(req.params.id);
+  const userId = (req as any).user.id;
+  if (!threadId)
     return res
       .status(400)
       .json({ code: 400, status: "error", message: "Thread id is required" });
   try {
     const thread = await prisma.threads.findUnique({
       where: {
-        id: Number(id),
+        id: Number(threadId),
       },
       include: {
         createdBy: {
@@ -136,7 +137,19 @@ export const getThreadDetail = async (req: Request, res: Response) => {
         likes: true,
       },
     });
-    return res.status(200).json({ code: 200, status: "success", data: thread });
+
+    const existingLike = await prisma.likes.findFirst({
+      where: {
+        thread_id: Number(threadId),
+        user_id: userId,
+      },
+    });
+
+    return res.status(200).json({
+      code: 200,
+      status: "success",
+      data: { ...thread, is_liked: Boolean(existingLike) },
+    });
   } catch (error) {
     return res
       .status(500)
