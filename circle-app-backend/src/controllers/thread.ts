@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../prisma/client";
+import client from "../utils/redisClient";
 import { io } from "../app";
 import { threadQueue } from "../queues";
 
@@ -53,6 +54,17 @@ export const getMyThreads = async (req: Request, res: Response) => {
   const userId = (req as any).user?.id;
 
   try {
+    const cacheKey = `threads:${userId}`;
+    const cacheThreads = await client.get(cacheKey);
+    if (cacheThreads) {
+      console.log("CACHE HIT");
+      return res
+        .status(200)
+        .json({ code: 200, status: "success", data: JSON.parse(cacheThreads) });
+    }
+
+    console.log("CACHE MISS");
+
     const threads = await prisma.threads.findMany({
       where: {
         created_by: Number(userId),
@@ -85,6 +97,8 @@ export const getMyThreads = async (req: Request, res: Response) => {
       ...thread,
       is_liked: thread.likes.some((like) => like.user_id === userId),
     }));
+
+    await client.setEx(cacheKey, 60, JSON.stringify(formatted));
 
     return res
       .status(200)

@@ -6,6 +6,7 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
+import { swaggerSetup } from "./swagger";
 
 import authRouter from "./routers/auth";
 import threadRouter from "./routers/thread";
@@ -37,6 +38,8 @@ export const io = new Server(server, {
     origin: "*",
   },
 });
+
+swaggerSetup(app);
 
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
