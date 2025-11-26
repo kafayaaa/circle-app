@@ -18,7 +18,7 @@ export const getUsers = async (req: Request, res: Response) => {
       orderBy: {
         created_at: "desc",
       },
-      take: Number(limit) || 5,
+      take: Number(limit) || undefined,
       skip: Number(offset) || 0,
       include: {
         _count: {
@@ -30,6 +30,8 @@ export const getUsers = async (req: Request, res: Response) => {
             followers: true,
           },
         },
+        followings: true,
+        followers: true,
       },
     });
 

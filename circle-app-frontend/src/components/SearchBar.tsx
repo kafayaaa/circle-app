@@ -14,7 +14,9 @@ export default function SearchBar() {
   const debouncedKeyword = useDebounce(keyword, 500);
 
   useEffect(() => {
-    dispatch(clearResults()); // kosongkan list dulu
+    if (keyword === "") {
+      dispatch(clearResults()); // kosongkan list dulu
+    }
   }, [keyword, dispatch]);
 
   useEffect(() => {

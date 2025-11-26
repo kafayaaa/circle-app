@@ -65,6 +65,8 @@ export async function getMe(req: Request, res: Response) {
     const user = await prisma.users.findUnique({
       where: { id: decoded.id },
       include: {
+        followings: true,
+        followers: true,
         _count: {
           select: {
             threads: true,

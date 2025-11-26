@@ -70,6 +70,8 @@ export const loginUser = createAsyncThunk(
           password: res.data.data.password,
           photo_profile: res.data.data.photo_profile,
           bio: res.data.data.bio,
+          followings: res.data.data.followings || [],
+          followers: res.data.data.followers || [],
           threads_count: res.data.data._count.threads,
           replies_count: res.data.data._count.replies,
           likes_count: res.data.data._count.likes,

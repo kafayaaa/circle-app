@@ -41,6 +41,8 @@ export async function loginUser({
   const user = await prisma.users.findUnique({
     where: isEmail ? { email: identifier } : { username: identifier },
     include: {
+      followings: true,
+      followers: true,
       _count: {
         select: {
           threads: true,

@@ -5,6 +5,7 @@ type ProfileListProps = {
   photo_profile: string;
   full_name: string;
   username: string;
+  visibility: boolean;
 };
 
 export default function ProfileList({
@@ -12,6 +13,7 @@ export default function ProfileList({
   photo_profile,
   full_name,
   username,
+  visibility,
 }: ProfileListProps) {
   return (
     <div className="w-full flex flex-col gap-3 p-5">
@@ -22,13 +24,13 @@ export default function ProfileList({
               <img
                 src={`http://localhost:3000/uploads/profiles/${photo_profile}`}
                 alt=""
-                className="rounded-full object-cover"
+                className="size-full rounded-full object-cover"
               />
             ) : (
               <img
                 src="http://localhost:3000/uploads/profiles/default.jpg"
                 alt=""
-                className="rounded-full object-cover"
+                className="size-full rounded-full object-cover"
               />
             )}
           </div>
@@ -37,8 +39,9 @@ export default function ProfileList({
             <p className="text-neutral-500">@{username}</p>
           </div>
         </div>
-
-        <FollowButton targetUserId={id} />
+        <div className={visibility ? "" : "hidden"}>
+          <FollowButton targetUserId={id} />
+        </div>
       </div>
     </div>
   );
