@@ -34,6 +34,24 @@ export const fetchThreads = createAsyncThunk(
   }
 );
 
+export const fetchMyThreads = createAsyncThunk(
+  "threads/fetchMyThreads",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.get("/thread/my-threads");
+      console.log("My Threads" + res.data);
+      return res.data.data;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        return rejectWithValue(
+          err.response?.data?.message || "Failed to fetch threads"
+        );
+      }
+      return rejectWithValue("Unexpected error occurred");
+    }
+  }
+);
+
 export const fetchThreadById = createAsyncThunk(
   "threads/fetchThreadById",
   async (id: string | number, { rejectWithValue }) => {
@@ -105,6 +123,17 @@ const threadSlice = createSlice({
         state.threads = action.payload;
       })
       .addCase(fetchThreads.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(fetchMyThreads.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchMyThreads.fulfilled, (state, action) => {
+        state.loading = false;
+        state.threads = action.payload;
+      })
+      .addCase(fetchMyThreads.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

@@ -48,6 +48,54 @@ export const getThreads = async (req: Request, res: Response) => {
   }
 };
 
+export const getMyThreads = async (req: Request, res: Response) => {
+  const { limit, offset } = req.query;
+  const userId = (req as any).user?.id;
+
+  try {
+    const threads = await prisma.threads.findMany({
+      where: {
+        created_by: Number(userId),
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+      // take: Number(limit) || ,
+      skip: Number(offset) || 0,
+      include: {
+        createdBy: {
+          select: {
+            id: true,
+            username: true,
+            full_name: true,
+            photo_profile: true,
+          },
+        },
+        likes: true,
+        _count: {
+          select: {
+            replies: true,
+            likes: true,
+          },
+        },
+      },
+    });
+
+    const formatted = threads.map((thread) => ({
+      ...thread,
+      is_liked: thread.likes.some((like) => like.user_id === userId),
+    }));
+
+    return res
+      .status(200)
+      .json({ code: 200, status: "success", data: formatted });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ code: 500, status: "error", message: "Internal Server Error" });
+  }
+};
+
 export const getThreadDetail = async (req: Request, res: Response) => {
   const { id } = req.params;
   if (!id)

@@ -11,7 +11,7 @@ export default function FollowPage() {
   return (
     <MainLayout>
       <div className="w-full min-h-screen flex flex-col">
-        <div className="w-full grid grid-cols-2">
+        <div className="w-full grid grid-cols-2 border-b border-neutral-700">
           <Link
             to={"followings"}
             className={`w-full flex justify-center items-center py-5 text-xl font-bold text-white cursor-pointer ${

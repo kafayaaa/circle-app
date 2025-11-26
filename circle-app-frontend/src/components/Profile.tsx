@@ -21,10 +21,7 @@ export default function Profile() {
   console.log(user);
 
   return (
-    <div className="w-full p-5 flex flex-col justify-start items-start gap-3 bg-[#262626] rounded-xl">
-      <h1 className="text-xl font-semibold text-white mb-1 cursor-default">
-        My Profile
-      </h1>
+    <div className="w-full flex flex-col justify-start items-start gap-3">
       <div className="w-full flex items-center bg-radial-[at_75%_25%] from-[#c2f3d5] via-[#e3d87f] to-[#a0d08e] h-36 rounded-2xl">
         <img
           src={

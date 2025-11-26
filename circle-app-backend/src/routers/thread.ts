@@ -1,6 +1,11 @@
 import express from "express";
 import { authenticate } from "../middlewares/auth";
-import { getThreads, getThreadDetail, addThread } from "../controllers/thread";
+import {
+  getThreads,
+  getMyThreads,
+  getThreadDetail,
+  addThread,
+} from "../controllers/thread";
 import { upload_thread } from "../utils/multer";
 
 const router = express.Router();
@@ -14,5 +19,7 @@ router.post(
   upload_thread.single("image"),
   addThread
 );
+
+router.get("/my-threads", authenticate, getMyThreads);
 
 export default router;

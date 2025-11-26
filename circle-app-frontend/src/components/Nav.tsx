@@ -1,16 +1,22 @@
 import { Link, useLocation } from "react-router-dom";
 
 type NavProps = {
-  active: string;
+  active: string | string[];
   to: string;
   children: React.ReactNode;
 };
 
 export default function Nav({ active, to, children }: NavProps) {
   const location = useLocation();
-  const activePage = location.pathname;
+  const pathname = location.pathname;
 
-  const isActive = activePage === active;
+  const isActive = Array.isArray(active)
+    ? active.some((a) =>
+        a === "/" ? pathname === "/" : pathname.startsWith(a)
+      )
+    : active === "/"
+    ? pathname === "/"
+    : pathname.startsWith(active);
 
   return (
     <Link to={to}>

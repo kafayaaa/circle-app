@@ -18,6 +18,10 @@ import { registerSocketUser } from "./lib/socketRegister";
 import FollowingPage from "./pages/Following";
 import FollowerPage from "./pages/Follower";
 import SearchPage from "./pages/Search";
+import ProfilePage from "./pages/Profile";
+import MyThreadsPage from "./pages/MyThreads";
+import MyMediasPage from "./pages/MyMedias";
+import MyMediaDetailPage from "./pages/MyMediaDetail";
 
 function App() {
   registerSocketUser();
@@ -109,6 +113,40 @@ function App() {
               element={
                 <ProtectedRoute>
                   <FollowerPage />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<MyThreadsPage />} />
+            <Route
+              path="/profile/my-threads"
+              element={
+                <ProtectedRoute>
+                  <MyThreadsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/my-medias"
+              element={
+                <ProtectedRoute>
+                  <MyMediasPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/my-medias/:id"
+              element={
+                <ProtectedRoute>
+                  <MyMediaDetailPage />
                 </ProtectedRoute>
               }
             />

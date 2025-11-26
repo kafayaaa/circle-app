@@ -35,7 +35,7 @@ export default function Sidebar() {
             <UserRoundSearch className="size-7" />
             Search
           </Nav>
-          <Nav active="/follow" to="/follow">
+          <Nav active={["/follow", "/followings", "/followers"]} to="/follow">
             <Heart className="size-7" />
             Follows
           </Nav>
