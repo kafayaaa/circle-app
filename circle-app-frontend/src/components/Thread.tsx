@@ -17,6 +17,7 @@ type ThreadProps = {
   likes_count: number;
   is_liked: boolean | undefined;
   replies: number | null;
+  detail: boolean;
 };
 
 export default function Thread({
@@ -30,6 +31,7 @@ export default function Thread({
   likes_count,
   is_liked,
   replies,
+  detail,
 }: ThreadProps) {
   const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch<AppDispatch>();
@@ -52,7 +54,10 @@ export default function Thread({
 
   return (
     <div className="w-full flex flex-col justify-start items-start gap-5 p-5 border-b border-neutral-700">
-      <Link to={"/thread-detail/" + id}>
+      <Link
+        to={"/thread-detail/" + id}
+        className={`${detail ? "cursor-default" : "cursor-pointer"}`}
+      >
         <div className="flex items-center gap-4 mb-4">
           {(profile && (
             <img
@@ -101,10 +106,15 @@ export default function Thread({
           />
           {currentLikes}
         </button>
-        <button className="flex items-center gap-1.5 cursor-pointer">
+        <Link
+          to={"/thread-detail/" + id}
+          className={`flex items-center gap-1.5 ${
+            detail ? "cursor-default" : "cursor-pointer"
+          }`}
+        >
           <MessageCircleMore />
           {replies}
-        </button>
+        </Link>
       </div>
     </div>
   );

@@ -35,7 +35,7 @@ export default function Suggest() {
       <h1 className="text-2xl font-semibold text-white cursor-default">
         Suggested for you
       </h1>
-      {filteredUsers.map((user) => (
+      {filteredUsers.slice(0, 5).map((user) => (
         <div
           key={user.id}
           className={`w-full flex justify-between ${

@@ -32,13 +32,14 @@ export default function ThreadPage() {
             id={thread.id}
             fullname={thread.createdBy?.full_name ?? "Unknown"}
             username={thread.createdBy?.username ?? "Unknown"}
-            profile={thread.createdBy?.photo_profile ?? ""}
+            profile={thread.createdBy?.photo_profile ?? "default.jpg"}
             uploaded_at={thread.created_at}
             content={thread.content}
             image={thread.image ?? ""}
             likes_count={thread._count?.likes ?? 0}
             is_liked={thread.is_liked ?? false}
             replies={thread._count?.replies ?? 0}
+            detail={false}
           />
         ))}
       </div>

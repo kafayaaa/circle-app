@@ -1,6 +1,6 @@
 import { timeAgo } from "@/utils/timeAgo";
-import { Dot, Heart, MessageCircleMore } from "lucide-react";
-import { useState } from "react";
+import { Dot } from "lucide-react";
+// import { useState } from "react";
 
 type ReplyListProps = {
   id: number;
@@ -21,10 +21,10 @@ export default function ReplyList({
   created_at,
   image,
 }: ReplyListProps) {
-  const [isLiked, setIsLiked] = useState(false);
-  const handleIsLiked = () => {
-    setIsLiked(!isLiked);
-  };
+  // const [isLiked, setIsLiked] = useState(false);
+  // const handleIsLiked = () => {
+  //   setIsLiked(!isLiked);
+  // };
 
   return (
     <div className="w-full flex flex-col gap-0">
@@ -64,7 +64,7 @@ export default function ReplyList({
               className="size-4/6 rounded-xl object-cover"
             />
           )}
-          <div className="flex items-center gap-5 mt-3 text-lg text-neutral-500">
+          {/* <div className="flex items-center gap-5 mt-3 text-lg text-neutral-500">
             <button className="flex items-center gap-1.5 cursor-pointer">
               <Heart
                 onClick={handleIsLiked}
@@ -78,7 +78,7 @@ export default function ReplyList({
               <MessageCircleMore />
               77
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -60,7 +60,7 @@ export const fetchMyFollowings = createAsyncThunk<Follow[], void>(
   "follow/fetchMyFollowings",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await api.get("/follows/me"); // buat endpoint yang return followings untuk active user
+      const res = await api.get("/follows/me");
       console.log(res);
       return res.data.data as Follow[];
     } catch (err: unknown) {

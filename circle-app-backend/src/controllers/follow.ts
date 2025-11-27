@@ -200,11 +200,9 @@ export const getMyFollowings = async (req: Request, res: Response) => {
   }
 
   try {
-    // Ambil semua records dimana active user adalah follower (user yg mengikuti orang lain)
     const list = await prisma.following.findMany({
       where: { follower_id: Number(userId) },
       include: {
-        // include data user yang di-follow
         following: {
           select: {
             id: true,
@@ -218,13 +216,12 @@ export const getMyFollowings = async (req: Request, res: Response) => {
       orderBy: { created_at: "desc" },
     });
 
-    // Format respons (kamu bisa sesuaikan shape)
     const payload = list.map((item) => ({
       id: item.id,
       follower_id: item.follower_id,
       following_id: item.following_id,
       created_at: item.created_at,
-      following_user: item.following, // object user yang di-follow
+      following_user: item.following,
     }));
 
     return res
@@ -263,7 +260,6 @@ export const getMyFollowers = async (req: Request, res: Response) => {
       orderBy: { created_at: "desc" },
     });
 
-    // Format respons (kamu bisa sesuaikan shape)
     const payload = list.map((item) => ({
       id: item.id,
       follower_id: item.follower_id,

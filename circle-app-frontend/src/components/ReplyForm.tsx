@@ -89,7 +89,7 @@ export default function ReplyForm({ photo_profile }: ReplyProps) {
             )}
             <textarea
               rows={3}
-              className="w-full resize-none text-2xl text-neutral-500 placeholder-neutral-500 border-none focus:border-none outline-none focus:outline-none caret-neutral-500"
+              className="w-full resize-none text-2xl text-white placeholder-neutral-500 border-none focus:border-none outline-none focus:outline-none caret-neutral-500"
               placeholder="Type your reply!"
               value={content}
               onChange={(e) => setContent(e.target.value)}

@@ -19,14 +19,14 @@ export const setupSocketListeners = (dispatch: AppDispatch) => {
   listenerInitialized = true;
 
   socket.on("new_thread", (thread) => {
-    const currentUser = store.getState().auth.user; // ambil user realtime
+    const currentUser = store.getState().auth.user;
 
     if (thread.created_by === currentUser?.id) return;
     dispatch(addThreadFromSocket(thread));
   });
 
   socket.on("new_reply", (reply) => {
-    const currentUser = store.getState().auth.user; // realtime juga
+    const currentUser = store.getState().auth.user;
 
     if (reply.user_id === currentUser?.id) return;
 

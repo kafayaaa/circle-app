@@ -41,13 +41,14 @@ export default function ThreadDetail() {
         id={threadDetail.id}
         fullname={threadDetail.createdBy?.full_name ?? "Unknown"}
         username={threadDetail.createdBy?.username ?? "Unknown"}
-        profile={threadDetail.createdBy?.photo_profile ?? ""}
+        profile={threadDetail.createdBy?.photo_profile ?? "default.jpg"}
         uploaded_at={threadDetail.created_at}
         content={threadDetail.content}
         image={threadDetail.image ?? ""}
         likes_count={threadDetail._count?.likes ?? 0}
         is_liked={isLiked}
         replies={threadDetail._count?.replies ?? 0}
+        detail={true}
       />
       <ReplyForm photo_profile={user.photo_profile ?? ""} />
       {replies.map((reply) => (
