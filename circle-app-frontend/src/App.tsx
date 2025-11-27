@@ -43,10 +43,6 @@ function App() {
     }
   }, [dispatch]);
 
-  useEffect(() => {
-    setupSocketListeners(dispatch);
-  }, [dispatch]);
-
   return (
     <>
       <BrowserRouter>

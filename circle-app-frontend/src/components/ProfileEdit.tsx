@@ -45,6 +45,8 @@ export default function ProfileEdit() {
     fd.append("bio", formData.bio);
     if (formData.photo_profile) {
       fd.append("photo_profile", formData.photo_profile);
+    } else {
+      fd.append("photo_profile", user.photo_profile!);
     }
     setOpen(false);
 

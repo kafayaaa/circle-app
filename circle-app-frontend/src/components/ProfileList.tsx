@@ -3,7 +3,7 @@ import { FollowButton } from "./FollowButton";
 type ProfileListProps = {
   id: number;
   photo_profile: string;
-  full_name: string;
+  full_name: React.ReactNode;
   username: string;
   visibility: boolean;
 };

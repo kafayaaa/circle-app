@@ -5,7 +5,10 @@ import {
   updateThreadLikeFromSocket,
 } from "@/redux/slices/threadSlice";
 import { addReplyFromSocket } from "@/redux/slices/replySlice";
-import { addFollowFromSocket } from "@/redux/slices/followSlice";
+import {
+  addFollowFromSocket,
+  removeFollowFromSocket,
+} from "@/redux/slices/followSlice";
 import {
   addFollowCountFromSocket,
   removeFollowCountFromSocket,
@@ -35,18 +38,19 @@ export const setupSocketListeners = (dispatch: AppDispatch) => {
   });
 
   socket.on("like_updated", (like) => {
-    console.log("socket data", like);
     dispatch(updateThreadLikeFromSocket(like));
   });
 
   socket.on("follow_event", (data) => {
-    dispatch(addFollowFromSocket(data.data));
+    console.log("SOCKET FOLLOW EVENT:", data);
 
     if (data.type === "FOLLOWER_ADD" || data.type === "FOLLOWING_ADD") {
+      dispatch(addFollowFromSocket({ type: data.type, data: data }));
       dispatch(addFollowCountFromSocket({ type: data.type }));
     }
 
     if (data.type === "FOLLOWER_REMOVE" || data.type === "FOLLOWING_REMOVE") {
+      dispatch(removeFollowFromSocket({ type: data.type, data: data.data }));
       dispatch(removeFollowCountFromSocket({ type: data.type }));
     }
   });

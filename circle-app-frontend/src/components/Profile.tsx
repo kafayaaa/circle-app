@@ -3,9 +3,12 @@ import { useSelector } from "react-redux";
 import ProfileEdit from "./ProfileEdit";
 import { useEffect } from "react";
 import socket from "@/hooks/useSocket";
+import { refreshUser } from "@/redux/slices/authSlice";
+import { useAppDispatch } from "@/redux/hooks";
 
 export default function Profile() {
   const user = useSelector((state: RootState) => state.auth.user);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     socket.on("follow_event", (data) => {
@@ -16,10 +19,12 @@ export default function Profile() {
       socket.off("follow_event");
     };
   }, []);
+  useEffect(() => {
+    dispatch(refreshUser());
+  }, [dispatch]);
 
   if (!user) return <p>Loading...</p>;
   console.log(user);
-
   return (
     <div className="w-full flex flex-col justify-start items-start gap-3">
       <div className="w-full flex items-center bg-radial-[at_75%_25%] from-[#c2f3d5] via-[#e3d87f] to-[#a0d08e] h-36 rounded-2xl">

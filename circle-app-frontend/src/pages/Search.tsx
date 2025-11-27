@@ -39,9 +39,16 @@ export default function SearchPage() {
                 id={item.id}
                 photo_profile={item.photo_profile ?? ""}
                 full_name={
-                  item.full_name == user.full_name
-                    ? item.full_name + " (You)"
-                    : item.full_name
+                  item.full_name == user.full_name ? (
+                    <>
+                      {item.full_name}{" "}
+                      <span className="text-[#04a51e] text-sm align-middle">
+                        (You)
+                      </span>
+                    </>
+                  ) : (
+                    item.full_name
+                  )
                 }
                 username={item.username}
                 visibility={item.id !== user.id}

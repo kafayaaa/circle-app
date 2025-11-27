@@ -10,7 +10,6 @@ export default function FollowerPage() {
     (state: RootState) => state.follow
   );
 
-  console.log(follower);
   useEffect(() => {
     dispatch(fetchMyFollowers());
   }, [dispatch]);

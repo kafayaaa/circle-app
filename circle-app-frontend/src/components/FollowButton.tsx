@@ -32,11 +32,6 @@ export const FollowButton: React.FC<FollowButtonProps> = ({ targetUserId }) => {
         Number(f.following_id) === Number(targetUserId)
     ) ?? false;
 
-  console.log(isFollowing);
-  console.log("FOLLOWING LIST:", following);
-  console.log("ACTIVE:", activeUser?.id);
-  console.log("TARGET:", targetUserId);
-
   const handleClick = async () => {
     if (localLoading || loading) return;
 

@@ -47,7 +47,7 @@ export const updateUser = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;
     const { username, full_name, email, bio } = req.body;
-    const photo_profile = req.file?.filename || "";
+    const photo_profile = req.file?.filename;
 
     if (!userId)
       return res

@@ -145,18 +145,46 @@ const followSlice = createSlice({
   initialState,
   reducers: {
     addFollowFromSocket: (state, action) => {
-      if (!state.following) state.following = [];
-      if (!action.payload) return;
+      const { type, data } = action.payload;
 
-      const exists = state.following.some(
-        (f) =>
-          f.follower_id === action.payload.follower_id &&
-          f.following_id === action.payload.following_id
-      );
+      if (!data) return;
 
-      if (!exists) state.following.unshift(action.payload);
+      if (type === "FOLLOWER_ADD") {
+        const exists = state.follower.some(
+          (f) =>
+            f.follower_id === data.follower_id &&
+            f.following_id === data.following_id
+        );
+        if (!exists) state.follower.unshift(data);
+      }
+
+      if (type === "FOLLOWING_ADD") {
+        const exists = state.following.some(
+          (f) =>
+            f.follower_id === data.follower_id &&
+            f.following_id === data.following_id
+        );
+        if (!exists) state.following.unshift(data);
+      }
+    },
+
+    removeFollowFromSocket: (state, action) => {
+      const { type, data } = action.payload;
+
+      if (type === "FOLLOWER_REMOVE") {
+        state.follower = state.follower.filter(
+          (f) => f.follower_id !== data.follower_id
+        );
+      }
+
+      if (type === "FOLLOWING_REMOVE") {
+        state.following = state.following.filter(
+          (f) => f.following_id !== data.following_id
+        );
+      }
     },
   },
+
   extraReducers: (builder) => {
     builder
       .addCase(fetchFollowing.pending, (state) => {
@@ -251,4 +279,5 @@ const followSlice = createSlice({
 });
 
 export default followSlice.reducer;
-export const { addFollowFromSocket } = followSlice.actions;
+export const { addFollowFromSocket, removeFollowFromSocket } =
+  followSlice.actions;

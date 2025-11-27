@@ -10,7 +10,6 @@ export default function FollowingPage() {
     (state: RootState) => state.follow
   );
 
-  console.log(following);
   useEffect(() => {
     dispatch(fetchMyFollowings());
   }, [dispatch]);

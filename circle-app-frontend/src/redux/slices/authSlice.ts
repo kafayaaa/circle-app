@@ -161,7 +161,6 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.error = null;
 
-        // save token
         localStorage.setItem("token", action.payload.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -170,7 +169,7 @@ const authSlice = createSlice({
       })
 
       .addCase(updateUser.fulfilled, (state, action) => {
-        state.user = action.payload;
+        state.user = { ...state.user, ...action.payload };
       })
       .addCase(refreshUser.fulfilled, (state, action) => {
         state.user = {

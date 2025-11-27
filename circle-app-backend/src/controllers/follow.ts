@@ -114,6 +114,10 @@ export const addFollow = async (req: Request, res: Response) => {
         follower_id: Number(userId),
         following_id: Number(add_follow_id),
       },
+      include: {
+        following: true,
+        follower: true,
+      },
     });
 
     io.to(add_follow_id.toString()).emit("follow_event", {

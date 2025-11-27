@@ -9,6 +9,16 @@ export const getThreads = async (req: Request, res: Response) => {
   const userId = (req as any).user?.id;
 
   try {
+    const cacheThreads = await client.get("threads");
+    if (cacheThreads) {
+      console.log("CACHE HIT" + cacheThreads);
+      return res
+        .status(200)
+        .json({ code: 200, status: "success", data: JSON.parse(cacheThreads) });
+    }
+
+    console.log("CACHE MISS");
+
     const threads = await prisma.threads.findMany({
       orderBy: {
         created_at: "desc",
@@ -39,6 +49,8 @@ export const getThreads = async (req: Request, res: Response) => {
       is_liked: thread.likes.some((like) => like.user_id === userId),
     }));
 
+    await client.setEx("threads", 60, JSON.stringify(formatted));
+
     return res
       .status(200)
       .json({ code: 200, status: "success", data: formatted });
@@ -57,7 +69,7 @@ export const getMyThreads = async (req: Request, res: Response) => {
     const cacheKey = `threads:${userId}`;
     const cacheThreads = await client.get(cacheKey);
     if (cacheThreads) {
-      console.log("CACHE HIT");
+      console.log("CACHE HIT" + cacheThreads);
       return res
         .status(200)
         .json({ code: 200, status: "success", data: JSON.parse(cacheThreads) });
