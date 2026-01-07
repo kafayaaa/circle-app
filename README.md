@@ -85,7 +85,7 @@ Follow these steps to set up Circle on your local machine:
 
 ## 📂 Project Structure
 
-- /frontend - React application and Chakra UI components.
+- /frontend - React application and Shadcn UI components.
 
 - /backend - Express API, Prisma schemas, and business logic.
 
