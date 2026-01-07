@@ -1,0 +1,1 @@
+Circle App is a social media app, similar to Instagram, Facebook, and others. Users can view other people's posts and their own. They can also interact with other users by liking and commenting on their posts.
